@@ -1,31 +1,35 @@
 import connectMongo from '../../../../server/models/config';
 import CalendarEvent from '../../../../server/models/CalendarEvent';
+import axios from 'axios';
 
 
-export async function POST(req) {
-    console.log('test')
-    const {title, start, end, backgroundColor, extendedProps} = await req.json();
-    console.log(title, start, end, backgroundColor, extendedProps)
+export async function POST(request) {
+    const {start, end} = await request.json()
+    console.log('start end')
+   
+    let _start = start.split('T')[0].split('-').join('')
+    let _end = end.split('T')[0].split('-').join('')
+  
     try {
-        await connectMongo()
-        const event = await CalendarEvent.create({
-            title: title,
-            start: start,
-            end: end,
-            backgroundColor: backgroundColor,
-            extendedProps: extendedProps
+        const result = await fetch('https://dglocal.oncloud.gr/s1services/JS/Production/calls.getMeetings', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                start: _start,
+                end: _end
+            })
         })
-        
+        const data = await result.json()
         return Response.json({
             success: true,
-            message: "Event created",
-            event: event
+            events: data.data
+    
         })
-       
     } catch (e) {
         console.log(e)
         throw new Error(e)
     }
-    
-   
-  }
+  
+}

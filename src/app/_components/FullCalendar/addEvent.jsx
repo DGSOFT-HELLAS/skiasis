@@ -62,7 +62,7 @@ export default function AddEvent({
 							name="description"
 							placeholder="Δώστε μια περιγραφή για το event."
 							id="message"
-							onChange={(e) => handleInput(e, true)}
+							onChange={(e) => handleInput(e)}
 						/>
 					</div>
 					

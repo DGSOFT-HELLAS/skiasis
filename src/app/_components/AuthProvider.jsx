@@ -1,6 +1,6 @@
 'use client'
 import { SessionProvider } from "next-auth/react"
-const ClientSessionProvider = ({ children }) => {
+const AuthProvider = ({ children }) => {
   
     return (
         <SessionProvider>
@@ -9,4 +9,4 @@ const ClientSessionProvider = ({ children }) => {
     )
 }
 
-export default ClientSessionProvider;
+export default AuthProvider;

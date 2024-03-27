@@ -24,9 +24,9 @@
         --card-foreground: hsl(222.2 84% 4.9%);
         --popover: hsl(0 0% 100%);
         --popover-foreground: hsl(222.2 84% 4.9%);
-        --primary: hsl(341, 100%, 50%, 1);
+        --primary: hsl(179, 20%, 45%);
         --primary-foreground: hsl(210 40% 98%);
-        --secondary: hsl(210 40% 96.1%);
+        --secondary: hsl(42, 86%, 67%);
         --secondary-foreground: hsl(222.2 47.4% 11.2%);
         --muted: hsl(210 40% 96.1%);
         --muted-foreground: hsl(215.4 16.3% 46.9%);
@@ -205,16 +205,6 @@ body {
     color: var(--muted-foreground);
 }
 
-.google_button {
-    width: 100%;
-    display: flex;
-    align-items: center;
-}
-
-.google_button svg {
-    margin-right: 10px;
-    font-size: 20px;
-}
 
 
 .button_icon {
@@ -267,3 +257,8 @@ body {
 .fc .fc-popover {
     z-index: 40;
 }
+
+.fc .fc-button {
+    font-size: 14px;
+}
+

@@ -1,7 +1,0 @@
-/* TICKETS MODULE */
-/* Path: src/app/_components/Tickets/tickets.module.css */
-
-.tickets_toolip_agent {
-    color: var(--primary);
-    font-weight: bold;
-}

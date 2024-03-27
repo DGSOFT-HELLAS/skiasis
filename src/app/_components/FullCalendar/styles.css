@@ -1,0 +1,54 @@
+.custom-event-wrapper {
+    height: 100%;
+    overflow: hidden;
+    width: 100%;
+}
+.custom-event-inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.custom-event-time {
+    font-size: var(--fc-small-font-size);
+    margin-bottom: 1px;
+    white-space: nowrap;
+}
+.custom-event-title {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 0px;
+}
+
+
+.month_wrapper {
+    height: 100%;
+    overflow: hidden;
+    width: 100%;
+}
+
+.month_inner {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 100%;
+    overflow: hidden;
+}
+
+.month_title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-left: 2px;
+    margin-bottom: 1px;
+    white-space: nowrap;
+}
+
+
+.custom_event_circle {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: red;
+    margin-right: 3px;
+}

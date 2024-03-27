@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import './style.css'
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -9,14 +8,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  DropdownMenuGroup,
-  DropdownMenuShortcut
+
 } from "@/components/ui/dropdown-menu"
 import { FaAngleDown } from "react-icons/fa";
 import { signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { Skeleton } from "@/components/ui/skeleton"
+import { getCookie, deleteCookie } from 'cookies-next';
 
 export function SkeletonDemo() {
   return (
@@ -44,7 +43,10 @@ const ProfileAvatar = () => {
 
   const { data: session } = useSession();
   let initials = handleAvatarName(session?.name, session?.surname);
-
+  const handleLogout  = () => {
+      deleteCookie('clientID')
+      router.push('/login')
+  }
   return (
     <>
       {initials ? (
@@ -73,21 +75,16 @@ const ProfileAvatar = () => {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                Profile
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Settings
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <DropdownMenuItem onClick={() => {
-                signOut({ redirect: false }).then(() => {
-                  router.push("/login"); // Redirect to the dashboard page after signing out
-                });
-              }}>
+              <DropdownMenuItem 
+              onClick={
+              //   () => {
+              //   signOut({ redirect: false }).then(() => {
+              //     router.push("/login"); // Redirect to the dashboard page after signing out
+              //   });
+              // }
+              handleLogout
+              }>
                 Logout
               </DropdownMenuItem>
             </DropdownMenuItem>

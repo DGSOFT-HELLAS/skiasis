@@ -1,16 +1,12 @@
-import Image from "next/image";
 import {redirect} from 'next/navigation'
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { getServerSession } from "next-auth";
+
+import {cookies} from 'next/headers'
 export default async function Home() {
 
-  const  session = await getServerSession(authOptions);
-    if(!session) {
+  const clientID = cookies().get('clientID')
+    if(!clientID ) {
         redirect('/login')
     }
-
-    if(session) {
-        redirect('/dashboard/tickets')
-    }
+    redirect('/dashboard/tickets')
  
   }

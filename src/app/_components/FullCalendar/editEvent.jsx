@@ -16,10 +16,8 @@ import { EnvelopeOpenIcon } from "@radix-ui/react-icons"
 
 export default function EditEvent({open, setOpen, event}){
 
-    console.log('event')
-    console.log(event)
+  
     const date = event.start && format(new Date(event.start), 'dd/MM/yyyy')
-    console.log(date)
     return (
         <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-md">

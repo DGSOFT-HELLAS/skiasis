@@ -1,130 +1,77 @@
 'use client'
-import React, { useState, useEffect, useReducer } from 'react'
+//STYLES:
+import './styles.css'
+import styles from './calendar.module.css'
+//REACT NODES:
+import React, { useState, useEffect,  useRef } from 'react'
+//FULL CALENDAR
 import elLocale from '@fullcalendar/core/locales/el';
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from "@fullcalendar/interaction"
+//CUSTOM EVENTS:
 import EditEvent from './editEvent'
 import AddEvent from './addEvent';
-import styles from './calendar.module.css'
 import axios from 'axios'
+import { getCookie, deleteCookie } from 'cookies-next';
+import { useSession } from "next-auth/react";
 
 
+export default function RFullCalendar({}) {
+	const { data: session } = useSession({
+		required: true,
+		onUnauthenticated() {
+		  redirect("/login");
+		},
+	  });
+	  console.log('client session')
+	  console.log(session)
+	
+	const calendarRef = useRef(null);
 
-export default function RFullCalendar() {
-
+	const [events, setEvents] = useState()
 
 	const [state, setState] = useState({
+		loading: false,
 		editEvent: false,
 		addEvent: false,
+		start: '20230101',
+		end: '20241230',
 		event: {
-			title: '',
-			start: '',
-			end: '',
+			title: 'Test title',
+			start: '2024-03-22 12:00:00',
+			end: '2024-03-22 12:00:00',
 			extendedProps: {
-				description: ''
+				
 			},
 		}
 	})
-	const [events, setEvents] = useState([
-		{
-			id: 1,
-			title: 'Επισκευή Καλογεράκης',
-			start: '2024-03-21 14:00',
-			end: '2010-03-21 14:30:00',
-			backgroundColor: '#FF5733',
-			extendedProps: {
-				description: 'Description 1'
-			},
+	
+	useEffect(() => {
+		console.log('state')
+		console.log(state.start)
+		console.log(state.end)
+	}, [state.start, state.end])
 
-		},
-		{
-			id: 2,
-			title: 'Πελάτης Διαμαντόπουλος',
-			start: '2024-03-21 15:00',
-			end: '2010-03-21 15:30:00',
-			backgroundColor: '#53af1e',
-			extendedProps: {
-				description: 'Description 1'
-			},
+	
 
-		},
-		{
-			id: 3,
-			title: 'Επανεφοδιασμός',
-			backgroundColor: '#ff33f5',
-			start: '2024-03-22 10:00',
-			end: '2024-03-22 10:20',
-			extendedProps: {
-				description: 'Description 2'
-			},
-
-		},
-		{
-			id: 3,
-			title: 'Πελάτης Καλογεράκης',
-			start: '2024-03-22 10:00',
-			end: '2024-03-22 10:20',
-			backgroundColor: '#53af1e',
-			extendedProps: {
-				description: 'Description 2'
-			},
-
-		},
-		{
-			id: 3,
-			title: 'Πελάτης Καλογεράκης',
-			start: '2024-03-22 10:00',
-			end: '2024-03-22 10:20',
-			backgroundColor: '#53af1e',
-			extendedProps: {
-				description: 'Description 2'
-			},
-
-		},
-		{
-			id: 3,
-			title: 'Πελάτης Καλογεράκης',
-			start: '2024-03-23 10:00',
-			end: '2024-03-23 10:20',
-			backgroundColor: '#53af1e',
-			extendedProps: {
-				description: 'Description 2'
-			},
-
-		},
-		{
-			id: 3,
-			title: 'Πελάτης Καλογεράκης',
-			start: '2024-03-23 10:00',
-			end: '2024-03-23 10:20',
-			backgroundColor: '#53af1e',
-			extendedProps: {
-				description: 'Description 2'
-			},
-
-		},
-		{
-			id: 3,
-			title: 'Πελάτης Καλογεράκης',
-			start: '2024-03-23 10:00',
-			end: '2024-03-24 10:20',
-			extendedProps: {
-				description: 'Description 2'
-			},
-
-		},
-
-	]);
-
-
+	const handleFetch = async () => {
+		const {data} = await axios.post('/api/calendarEvents', {
+			start: state.start,
+			end: state.end
+		})
+		console.log(data.events.length)
+		setEvents(data.events)
+	
+	}
 
 	useEffect(() => {
-		console.log(state.event)
-		console.log(state.events)
-	}, [state, events])
+		handleFetch()
+	}, [])
+
+
 	const handleOpenAddEvent = () => {
 		setState(prev => ({ ...prev, addEvent: false }))
 	}
@@ -140,7 +87,7 @@ export default function RFullCalendar() {
 	const handleEvent = (name, value, extendedProps) => {
 
 		if (extendedProps) {
-			setState(prev => ({ ...prev, event: { ...prev.event, extendedProps: { ...prev.event.extendedProps, [name]: value, backgroundColor: '#FF5733'} } }))
+			setState(prev => ({ ...prev, event: { ...prev.event, extendedProps: { ...prev.event.extendedProps, [name]: value } } }))
 			return;
 		}
 		setState(prev => ({ ...prev, event: { ...prev.event, [name]: value } }))
@@ -157,7 +104,7 @@ export default function RFullCalendar() {
 
 	const handleAddSubmit = async () => {
 		setEvents(prev => ([...prev, state.event]))
-		const {data} = await axios.post('/api/calendarEvents', {
+		const { data } = await axios.post('/api/calendarEvents', {
 			title: state.event.title,
 			start: state.event.start,
 			end: state.event.end,
@@ -190,15 +137,62 @@ export default function RFullCalendar() {
 		))
 
 	};
+
+
+	// const renderEventContent = (eventInfo) => {
+	
+	// 	if (eventInfo.view.type === 'listWeek') {
+	// 		return (
+	// 			<div className='custom-event-wrapper'>
+	// 				<div className='custom-event-inner'>
+	// 					<div className='custom-event-time'>{eventInfo.timeText}</div>
+	// 					<div className='custom-event-title'>{eventInfo.event.title}</div>
+	// 					{/* <div>
+	// 						<button>Custom Button</button>
+	// 					</div> */}
+	// 				</div>
+	// 			</div>
+	// 		);
+	// 	}
+	
+	// 	if (eventInfo.view.type === 'dayGridMonth') {
+	// 		return (
+	// 			<div className='month_wrapper'>
+	// 				<div className='month_inner'>
+	// 					<div className='custom-event-time'>{eventInfo.timeText}</div>
+	// 					<div className='month_title'>{eventInfo.event.title}</div>
+	// 				</div>
+	// 			</div>
+	// 		);
+	// 	}
+	
+	// 	// Default rendering for other view types
+	// 	return (
+	// 		<div className='custom-event-wrapper'>
+	// 			<div className='custom-event-inner'>
+	// 				<div className='custom-event-time'>{eventInfo.timeText}</div>
+	// 				<div className='custom-event-title'>{eventInfo.event.title}</div>
+	// 			</div>
+	// 		</div>
+	// 	);
+	// };
+
+	async function handleMonthChange(payload) {
+		setTimeout(() => {
+			calendarRef?.current?.getApi().updateSize();
+		  }, 0);
+		setState(prev => ({ ...prev, start: payload.startStr, end: payload.endStr, loading: true }))
+	  }
 	return (
 		<div className={styles.wrapper}>
 			<FullCalendar
 				plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin,]}
 				dateClick={(e) => handleAddDate(e)}
+				selectMirror={true}
 				headerToolbar={{
 					left: 'prev,next today',
 					center: 'title',
-					right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+					right: 'dayGridMonth,timeGridWeek,listWeek'
 				}}
 				events={events}
 				initialView='dayGridMonth'
@@ -206,7 +200,13 @@ export default function RFullCalendar() {
 				eventClick={handleEdit}
 				selectable={true}
 				locale={elLocale}
-				dayMaxEventRows={4}
+				dayMaxEventRows={3}
+				datesSet={handleMonthChange}
+				 ref={calendarRef}
+				contentHeight={90}
+				height={'100vh'}
+				lazyFetching={true}
+
 
 			/>
 			<EditEvent
