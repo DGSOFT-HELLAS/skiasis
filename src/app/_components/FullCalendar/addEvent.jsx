@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button"
 import {
 	Dialog,
@@ -10,26 +10,28 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-
 import { Label } from '@/components/ui/label';
 import { Textarea } from "@/components/ui/textarea"
-import DateTime from "./timepicker";
+import DateTimePicker from "../DateTimePicker";
 
-import SelectColor from "../SelectColorTag";
+
+
 export default function AddEvent({
+	startDate, 
+	endDate,
 	open,
 	setOpen,
-	selectedDate,
 	handleEvent,
 	event,
 	handleSubmit
 }) {
 
 
-	const [select, setSelect] = useState({
-		value: "red",
-		label: "red"
-	})
+
+	useEffect(() => {
+		console.log(startDate, endDate)
+	}, [startDate])
+
 
 	const handleInput = (e, extendedProps = false) => {
 		const { name, value } = e.target;
@@ -43,10 +45,6 @@ export default function AddEvent({
 				<DialogHeader>
 					<DialogTitle className="mb-4">Προσθήκη Event</DialogTitle>
 					<div className="pb-2">
-						<Label htmlFor="email">Επιλογή Tag</Label>
-						<SelectColor onClick={handleInput} />
-					</div>
-					<div className="pb-2">
 						<Label htmlFor="email">Tίτλος</Label>
 						<Input
 							onChange={handleInput}
@@ -54,6 +52,7 @@ export default function AddEvent({
 							type="email"
 							id="email"
 							name="title"
+							placeholder="Δώστε ένα τίτλο για την συνάντηση"
 						/>
 					</div>
 					<div className="pb-2" >
@@ -65,20 +64,12 @@ export default function AddEvent({
 							onChange={(e) => handleInput(e)}
 						/>
 					</div>
-					
-					< DateTime
+					<DateTimePicker 
 						label="Hμερ/'Ώρα Έναρξης ( 24-hour)"
 						name="start"
-						selectedDate={selectedDate}
+						date={startDate}
 						handleEvent={handleEvent}
 					/>
-					< DateTime
-						label="Hμερ/'Ώρα Λήξης ( 24-hour)"
-						name="end"
-						selectedDate={selectedDate}
-						handleEvent={handleEvent}
-					/>
-
 				</DialogHeader>
 				<DialogFooter className="sm:justify-start">
 					<Button onClick={handleSubmit} type="button">

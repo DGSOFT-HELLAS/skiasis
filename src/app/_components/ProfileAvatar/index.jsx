@@ -15,7 +15,6 @@ import { signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { Skeleton } from "@/components/ui/skeleton"
-import { getCookie, deleteCookie } from 'cookies-next';
 
 export function SkeletonDemo() {
   return (
@@ -35,18 +34,17 @@ export function SkeletonDemo() {
 const ProfileAvatar = () => {
   const router = useRouter();
 
-  const handleAvatarName = (firstName, lastName) => {
-    if (firstName && lastName) {
-      return firstName[0].toUpperCase() + lastName[0].toUpperCase()
+  const handleAvatarName = (firstName) => {
+    if (firstName) {
+      return firstName[0].toUpperCase();
     }
   }
 
   const { data: session } = useSession();
-  let initials = handleAvatarName(session?.name, session?.surname);
-  const handleLogout  = () => {
-      deleteCookie('clientID')
-      router.push('/login')
-  }
+
+  const user = session?.user;
+  let initials = handleAvatarName(user?.name);
+ 
   return (
     <>
       {initials ? (
@@ -58,8 +56,8 @@ const ProfileAvatar = () => {
                 </Button>
                 <div className="avatar_details">
                   <div>
-                    <p className='text-sm font-medium leading-none'>{session?.name} {session?.surname}</p>
-                    <p className='text-xs leading-none text-muted-foreground'>{session?.role}</p>
+                    <p className='text-sm font-medium leading-none'>{user?.name} </p>
+                    <p className='text-xs leading-none text-muted-foreground'>{user?.role}</p>
                   </div>
                   <FaAngleDown className='text-muted-foreground ml-2' />
                 </div>
@@ -78,21 +76,20 @@ const ProfileAvatar = () => {
             <DropdownMenuItem>
               <DropdownMenuItem 
               onClick={
-              //   () => {
-              //   signOut({ redirect: false }).then(() => {
-              //     router.push("/login"); // Redirect to the dashboard page after signing out
-              //   });
-              // }
-              handleLogout
+                () => {
+                signOut({ redirect: false }).then(() => {
+                  router.push("/login"); // Redirect to the dashboard page after signing out
+                });
+              }
               }>
                 Logout
               </DropdownMenuItem>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      ) : (
+       ) : (
         <SkeletonDemo />
-      )}
+      )} 
     </>
 
 

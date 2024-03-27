@@ -1,7 +1,6 @@
 'use client'
 //STYLES:
 import './styles.css'
-import styles from './calendar.module.css'
 //REACT NODES:
 import React, { useState, useEffect,  useRef } from 'react'
 //FULL CALENDAR
@@ -12,48 +11,44 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from "@fullcalendar/interaction"
 //CUSTOM EVENTS:
-import EditEvent from './editEvent'
 import AddEvent from './addEvent';
 import axios from 'axios'
-import { getCookie, deleteCookie } from 'cookies-next';
 import { useSession } from "next-auth/react";
-
+import ViewEvent from '../ViewEvent';
 
 export default function RFullCalendar({}) {
-	const { data: session } = useSession({
+	const { data: session} = useSession({
 		required: true,
 		onUnauthenticated() {
 		  redirect("/login");
 		},
 	  });
-	  console.log('client session')
-	  console.log(session)
+	
 	
 	const calendarRef = useRef(null);
 
 	const [events, setEvents] = useState()
-
+	
+	
 	const [state, setState] = useState({
 		loading: false,
 		editEvent: false,
 		addEvent: false,
-		start: '20230101',
+		start: '20240101',
 		end: '20241230',
-		event: {
-			title: 'Test title',
-			start: '2024-03-22 12:00:00',
-			end: '2024-03-22 12:00:00',
-			extendedProps: {
-				
-			},
-		}
+		event: {},
 	})
 	
-	useEffect(() => {
-		console.log('state')
-		console.log(state.start)
-		console.log(state.end)
-	}, [state.start, state.end])
+	// useEffect(() => {
+	// 	console.log('state')
+	// 	console.log(state.event)
+	// }, [state.event])
+
+
+	// useEffect(() => {
+	// 	console.log('events')
+	// 	console.log(events)
+	// }, [events])
 
 	
 
@@ -62,7 +57,7 @@ export default function RFullCalendar({}) {
 			start: state.start,
 			end: state.end
 		})
-		console.log(data.events.length)
+		
 		setEvents(data.events)
 	
 	}
@@ -72,18 +67,41 @@ export default function RFullCalendar({}) {
 	}, [])
 
 
-	const handleOpenAddEvent = () => {
-		setState(prev => ({ ...prev, addEvent: false }))
-	}
 
 
 	//Handle to close the Edit form popup
 	const handleCloseForm = (info) => {
 		setState(prev => ({ ...prev, editEvent: false }))
 	}
-
-
-
+	//PASS DATA TO THE EDIT FORM:
+	const handleEdit = (info) => {
+		setState(prev => ({ 
+			...prev, 
+			editEvent: true,
+			event: {
+				...prev.event,
+				start: info.event.startStr,
+				end: info.event.endStr,
+				title: info.event.title,
+				description: info.event.extendedProps.description,
+				extendedProps: info.event.extendedProps
+			}
+		}))
+	};
+	//CLOSE THE ADD EVENT:
+	const handleCloseAddEvent = () => {
+		setState(prev => ({ ...prev, addEvent: false }))
+	}
+	//ADD A NEW EVENT AFTER CLEARING THE EVENT ON THE STATE:
+	const handleAddEvent = (event) => {
+		const start = `${event.dateStr}T09:00`
+		const end = `${event.dateStr}T09:30`
+		setState(prev => ({ ...prev, addEvent: true, event: {
+			start: start,
+			end: end
+		} }))
+	};
+	//ALTER THE STATE OF THE EVENT THAT WE ADDED:
 	const handleEvent = (name, value, extendedProps) => {
 
 		if (extendedProps) {
@@ -93,101 +111,26 @@ export default function RFullCalendar({}) {
 		setState(prev => ({ ...prev, event: { ...prev.event, [name]: value } }))
 
 	}
-
-
-
-
-	const handleAddDate = (event) => {
-		setState(prev => ({ ...prev, addEvent: true, event: { ...prev.event, date: event.dateStr } }))
-	};
-
-
+	//FINAL SUBMIT OF THE EVENT:
 	const handleAddSubmit = async () => {
-		setEvents(prev => ([...prev, state.event]))
-		const { data } = await axios.post('/api/calendarEvents', {
-			title: state.event.title,
-			start: state.event.start,
-			end: state.event.end,
-			backgroundColor: state.event.backgroundColor,
-			description: state.event.extendedProps.description
-		})
-		console.log('data')
-		console.log(data)
-		//Clears previous state of the event and closes the popup
-		setState(prev => ({ ...prev, addEvent: false, event: { title: '', start: '', end: '', extendedProps: { description: '' } } }))
+		//add event to softone
 
 	}
 
-
-	const handleEdit = (info) => {
-		setState(prev => ({ ...prev, editEvent: true }))
-		const calendarApi = info.view.calendar;
-		const event = calendarApi.getEventById(info.event.id);
-		setState(prev => ({
-			...prev,
-			event: {
-				title: event.title,
-				start: event.start,
-				end: event.end,
-				extendedProps: {
-					description: event.extendedProps.description
-				}
-			}
-		}
-		))
-
-	};
-
-
-	// const renderEventContent = (eventInfo) => {
-	
-	// 	if (eventInfo.view.type === 'listWeek') {
-	// 		return (
-	// 			<div className='custom-event-wrapper'>
-	// 				<div className='custom-event-inner'>
-	// 					<div className='custom-event-time'>{eventInfo.timeText}</div>
-	// 					<div className='custom-event-title'>{eventInfo.event.title}</div>
-	// 					{/* <div>
-	// 						<button>Custom Button</button>
-	// 					</div> */}
-	// 				</div>
-	// 			</div>
-	// 		);
-	// 	}
-	
-	// 	if (eventInfo.view.type === 'dayGridMonth') {
-	// 		return (
-	// 			<div className='month_wrapper'>
-	// 				<div className='month_inner'>
-	// 					<div className='custom-event-time'>{eventInfo.timeText}</div>
-	// 					<div className='month_title'>{eventInfo.event.title}</div>
-	// 				</div>
-	// 			</div>
-	// 		);
-	// 	}
-	
-	// 	// Default rendering for other view types
-	// 	return (
-	// 		<div className='custom-event-wrapper'>
-	// 			<div className='custom-event-inner'>
-	// 				<div className='custom-event-time'>{eventInfo.timeText}</div>
-	// 				<div className='custom-event-title'>{eventInfo.event.title}</div>
-	// 			</div>
-	// 		</div>
-	// 	);
-	// };
 
 	async function handleMonthChange(payload) {
 		setTimeout(() => {
 			calendarRef?.current?.getApi().updateSize();
 		  }, 0);
 		setState(prev => ({ ...prev, start: payload.startStr, end: payload.endStr, loading: true }))
-	  }
+	}
+
+
 	return (
-		<div className={styles.wrapper}>
+		<div className="wrapper">
 			<FullCalendar
 				plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin,]}
-				dateClick={(e) => handleAddDate(e)}
+				dateClick={(e) => handleAddEvent(e)}
 				selectMirror={true}
 				headerToolbar={{
 					left: 'prev,next today',
@@ -206,21 +149,21 @@ export default function RFullCalendar({}) {
 				contentHeight={90}
 				height={'100vh'}
 				lazyFetching={true}
-
-
 			/>
-			<EditEvent
+			<ViewEvent
 				event={state.event}
 				open={state.editEvent}
 				setOpen={handleCloseForm}
-			/>
+				handleEvent={handleEvent}/>
 			<AddEvent
 				open={state.addEvent}
-				setOpen={handleOpenAddEvent}
+				setOpen={handleCloseAddEvent}
 				handleEvent={handleEvent}
 				event={state.event}
 				handleSubmit={handleAddSubmit}
-				selectedDate={state.event.date} />
+				startDate={state.event.start}
+				endDate={state.event.end}
+				/>
 		</div>
 	)
 }
