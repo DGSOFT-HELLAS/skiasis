@@ -16,6 +16,7 @@
     border: 1px solid var(--border);
     display: flex; 
     align-items: center;
+    cursor: pointer;
     /* min-width: 120px; */
     
 }
@@ -34,3 +35,63 @@
     height: 14px;
     color: var(--muted-foreground);
 }
+
+/* STYLE THE TIMEPICKER */
+.timepickerPopover {
+    padding: 5px;
+    display: flex;
+    width: 100%;
+
+}
+
+
+
+.column{
+    overflow: scroll;
+    overflow-x: hidden;
+    height: 250px;
+    width: 53px;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+
+.timeItem {
+    height: 30px;
+    width: 45px;
+    background-color: rgba(238, 238, 238, 0.74);
+    border-radius: 5px;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 4px;
+    cursor: pointer;
+    font-size: 15px;
+    color: rgb(31, 30, 30);
+}
+
+.timeItemActive {
+    background-color: var(--primary);
+    color: white;
+
+}
+
+.column::-webkit-scrollbar {
+    width: 8px;
+    border-radius: 8px;
+  }
+  
+  .column::-webkit-scrollbar-track {
+    background: #fdfdfd;
+
+
+  }
+  
+  .column::-webkit-scrollbar-thumb {
+    background-color: #dbdada;;
+  }
+  
+  .column::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }

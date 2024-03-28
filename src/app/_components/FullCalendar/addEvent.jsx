@@ -27,11 +27,8 @@ export default function AddEvent({
 }) {
 
 
-
-	useEffect(() => {
-		console.log(startDate, endDate)
-	}, [startDate])
-
+	
+	
 
 	const handleInput = (e, extendedProps = false) => {
 		const { name, value } = e.target;
@@ -65,9 +62,16 @@ export default function AddEvent({
 						/>
 					</div>
 					<DateTimePicker 
-						label="Hμερ/'Ώρα Έναρξης ( 24-hour)"
+						label="Hμερ/'Ώρα Έναρξης (24-hour)"
 						name="start"
 						date={startDate}
+						handleEvent={handleEvent}
+					/>
+					<DateTimePicker 
+						label="Hμερ/'Ώρα Λήξης (24-hour)"
+						name="start"
+						date={endDate}
+						minDate={startDate}
 						handleEvent={handleEvent}
 					/>
 				</DialogHeader>

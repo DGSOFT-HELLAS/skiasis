@@ -1,7 +1,5 @@
-import connectMongo from '../../../../server/models/config';
-import CalendarEvent from '../../../../server/models/CalendarEvent';
-import axios from 'axios';
 
+import translateData from '@/utils/translateData';
 
 export async function POST(request) {
     const {start, end} = await request.json()
@@ -21,10 +19,19 @@ export async function POST(request) {
                 end: _end
             })
         })
-        const data = await result.json()
+        // const data = await result.json()
+        let buffer;
+        try {
+            buffer = await translateData(result)
+          
+        } catch (e) {
+            console.log(e)
+        }
+       
+        // console.log(buffer);
         return Response.json({
             success: true,
-            events: data.data
+            events: buffer 
     
         })
     } catch (e) {

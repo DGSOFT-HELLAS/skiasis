@@ -1,4 +1,5 @@
 
+'use client'
 import styles from './styles.module.css'
 import { Button } from "@/components/ui/button"
 import { format } from 'date-fns'
@@ -18,8 +19,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { TextArea } from '../Inputs/TextArea';
-import { Pencil, X } from 'lucide-react';
+import { Pencil, X, Save, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import DateTimePicker from '../DateTimePicker';
+
+
 
 const FormSchema = z.object({
     title: z.string().min(2, {
@@ -33,55 +37,86 @@ const FormSchema = z.object({
 
 
 
-export default function ViewEvent({ open, setOpen, event, handleEvent }) {
+export default function ViewEvent({ 
+    open, 
+    setOpen, 
+    event, 
+    handleEvent,
+    startDate,
+    endDate,
+}) {
 
-    const [edit, setEdit] = useState(false);
-    const [date, setDate] = useState(null)
+    const [state, setState] = useState({
+        edit: false,
+        disabled: true
+    })
     const form = useForm({
         resolver: zodResolver(FormSchema),
         defaultValues: {
-            title: 'custom title',
-            description: 'custom description'
+            title:  event.title,
+            description: event.description
         },
     })
 
+    
     useEffect(() => {
-            const date = event.start && format(new Date(event.start), 'dd/MM/yyyy')
-            setDate(date)
+        form.reset({
+            title: event.title,
+            description: event.description
+        })
+    }, [event])
 
-    }, [])
-
-
+    const handleEdit = () => {
+        setState(prev => ({
+            ...prev,
+            edit: !prev.edit,
+            disabled: !prev.disabled
+        }))
+    }
     const onSubmit = (data) => {
         console.log('submit')
     }
-    // const date  = '2024-05-01'
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle>{event.title}</DialogTitle>
-                    <DialogDescription className={styles.calendarDate}>
-                        <Calendar />
-                        <span> {date}</span>
-                        <span> {event.title}</span>
-                    </DialogDescription>
+                    <DialogTitle>
+                        {event.start.split('T')[0]}
+                        </DialogTitle>
+                   
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
-                        {/* <TimePicker /> */}
                         <TextInput
                             control={form.control}
                             label={'Τιτλος'}
                             name="title"
-                            disabled={true}
+                            disabled={state.disabled}
                         />
                         <TextArea
                             control={form.control}
                             label={'Περιγραφή'}
                             name="description"
-                            disabled={true}
+                            disabled={state.disabled}
                         />
+                        {state.edit ? (
+                           <>
+                              <DateTimePicker 
+                             label="Hμερ/'Ώρα Έναρξης ( 24-hour)"
+                             name="start"
+                             date={startDate}
+                             handleEvent={handleEvent}
+                         />
+                         <DateTimePicker 
+                             label="Hμερ/'Ώρα Έναρξης ( 24-hour)"
+                             name="start"
+                             date={endDate}
+                             minDate={startDate}
+                             handleEvent={handleEvent}
+                         />
+                           
+                           </>
+                        ) : null}
                         <DialogFooter className="sm:justify-start">
                             <DialogClose asChild>
                                 <Button variant="outline"  >
@@ -89,13 +124,22 @@ export default function ViewEvent({ open, setOpen, event, handleEvent }) {
                                 </Button >
                             </DialogClose>
                             <Button
-                                onClick={() => setEdit(prev => !prev)}
+                                onClick={handleEdit}
                                 variant="outline"   >
                                 <Pencil className="h-4 w-4" />
                             </Button>
-                            <Button type="submit">
+                            
+                            {!state.edit ? (
+                                <Button  type="submit">
+                                <Plus className="h-4 w-4 mr-2" />
                                 Νέα Προσφορά
                             </Button>
+                            ) : (
+                                <Button  type="submit">
+                                    <Save className="h-4 w-4 mr-2" />
+                                    Aποθήκευση
+                                </Button>
+                            )}
                         </DialogFooter>
                     </form>
                 </Form>

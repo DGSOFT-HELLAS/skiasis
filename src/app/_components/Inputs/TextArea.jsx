@@ -29,6 +29,8 @@ export function TextArea({
                     <FormLabel>{label}</FormLabel>
                     <FormControl>
                         <Input
+                        rows={4}
+                        resize={'vertical'}
                         disabled={disabled}
                         className="disabled:opacity-60" 
                         placeholder={placeholder} {...field} />

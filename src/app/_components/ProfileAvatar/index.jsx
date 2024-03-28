@@ -78,7 +78,7 @@ const ProfileAvatar = () => {
               onClick={
                 () => {
                 signOut({ redirect: false }).then(() => {
-                  router.push("/login"); // Redirect to the dashboard page after signing out
+                  router.push("/login"); 
                 });
               }
               }>
