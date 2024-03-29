@@ -31,7 +31,7 @@ export async function POST(request) {
         // console.log(buffer);
         return Response.json({
             success: true,
-            events: buffer 
+            events: buffer.data
     
         })
     } catch (e) {

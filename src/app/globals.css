@@ -262,3 +262,10 @@ body {
     font-size: 14px;
 }
 
+.fc-toolbar-title {
+    font-size: 18px!important;
+}
+
+.fc-daygrid-dot-event {
+    cursor: pointer;
+}

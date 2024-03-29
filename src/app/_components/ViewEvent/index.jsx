@@ -2,17 +2,15 @@
 'use client'
 import styles from './styles.module.css'
 import { Button } from "@/components/ui/button"
-import { format } from 'date-fns'
+import { isBefore } from 'date-fns'
 import {
     Dialog,
     DialogClose,
     DialogContent,
-    DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
-import { Calendar } from 'lucide-react';
 import { TextInput } from '../Inputs/TextInput';
 import {Form,} from "@/components/ui/form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -27,10 +25,10 @@ import DateTimePicker from '../DateTimePicker';
 
 const FormSchema = z.object({
     title: z.string().min(2, {
-        message: "Ο Τίτλος πρέπει να έιναι τουλάχιστον 2 χαρακτήρες.",
+        message: "Tουλάχιστον 2 χαρακτήρες.",
     }),
     description: z.string().min(2, {
-        message: 'please '
+        message: 'Tουλάχιστον 2 χαρακτήρες.'
     })
 })
 
@@ -54,19 +52,24 @@ export default function ViewEvent({
         resolver: zodResolver(FormSchema),
         defaultValues: {
             title:  event.title,
-            description: event.description
+            description: event.description,
+           
         },
     })
+    const [calendarError, setCalendarError] = useState(null)
 
+
+    
     
     useEffect(() => {
         form.reset({
             title: event.title,
-            description: event.description
+            description: event.description,
         })
+
     }, [event])
 
-    const handleEdit = () => {
+    const handleShowEditForm = () => {
         setState(prev => ({
             ...prev,
             edit: !prev.edit,
@@ -74,14 +77,28 @@ export default function ViewEvent({
         }))
     }
     const onSubmit = (data) => {
-        console.log('submit')
+        if(isBefore(endDate, startDate)) {
+            setCalendarError('Η ημερομηνία λήξης δεν μπορεί να είναι πριν την ημερομηνία έναρξης')
+        }  else {
+            setCalendarError(null)
+        }
+
+        //SEND THE FINAL REQUEST TO UPDATE SOFTONE:
+		console.log({
+			...data,
+			start: startDate,
+			end:  endDate
+		
+		})
     }
+
+    
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle>
-                        {event.start.split('T')[0]}
+                        {event.start.split(' ')[0]}
                         </DialogTitle>
                    
                 </DialogHeader>
@@ -102,16 +119,16 @@ export default function ViewEvent({
                         {state.edit ? (
                            <>
                               <DateTimePicker 
-                             label="Hμερ/'Ώρα Έναρξης ( 24-hour)"
+                             label="Hμερ/'Ώρα Έναρξης"
                              name="start"
                              date={startDate}
                              handleEvent={handleEvent}
+                             calendarError={calendarError}
                          />
                          <DateTimePicker 
-                             label="Hμερ/'Ώρα Έναρξης ( 24-hour)"
-                             name="start"
+                             label="Hμερ/'Ώρα Λήξης"
+                             name="end"
                              date={endDate}
-                             minDate={startDate}
                              handleEvent={handleEvent}
                          />
                            
@@ -124,7 +141,7 @@ export default function ViewEvent({
                                 </Button >
                             </DialogClose>
                             <Button
-                                onClick={handleEdit}
+                                onClick={handleShowEditForm}
                                 variant="outline"   >
                                 <Pencil className="h-4 w-4" />
                             </Button>

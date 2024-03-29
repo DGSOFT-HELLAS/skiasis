@@ -1,7 +1,7 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import axios from 'axios';
-
+import translateData from '@/utils/translateData';
 
 export const authOptions = {
 	session: {
@@ -22,10 +22,16 @@ export const authOptions = {
 				if (!clientID) return null;
 				const authID = await softoneAuthenticate(clientID);
 				if (!authID) return null;
+				const user = await getUser(authID);
+				if(!user) {
+					console.log('no user found')
+					return null;
+				};
+				
 				return {
 						id: authID,
-						name: 'giannis',
-						role: 'test user'
+						name: user?.NAME,
+						role: user?.WEBGROUPNAME
 				};
 			},
 		}),
@@ -91,4 +97,24 @@ async function softoneAuthenticate(clientID) {
 	}
 
 
+}
+
+
+
+async function getUser(clientID) {
+	try {
+		const response = await fetch(`https://dglocal.oncloud.gr/s1services/JS/Production/calls.getUser`, {
+			method: 'POST',
+			body: JSON.stringify({
+				clientID: clientID
+			}),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		})
+		const buffer = await translateData(response);
+		return buffer[0];
+	} catch (e) {
+		return null;
+	}
 }

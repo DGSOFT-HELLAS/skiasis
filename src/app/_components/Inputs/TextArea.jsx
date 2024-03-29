@@ -35,7 +35,7 @@ export function TextArea({
                         className="disabled:opacity-60" 
                         placeholder={placeholder} {...field} />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="text-xs font-medium pt-1" />
                 </FormItem>
             )}
         />

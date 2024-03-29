@@ -29,7 +29,7 @@ export function TextInput({
                         disabled={disabled}
                         placeholder={placeholder} {...field} />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="text-xs font-medium pt-1" />
                 </FormItem>
             )}
         />

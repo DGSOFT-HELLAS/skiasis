@@ -23,10 +23,11 @@ import Image from "next/image"
                 <Image src="/newlogo.png" alt="logo" fill sizes={'130px 60px'}/>
             </div>
             <div className="nav_buttons">
-                <ProfileAvatar />
+              
                 <Button className="nav_burger" variant="ghost" size="icon">
                     <MenuIcon className="h-[1rem] w-[1rem]"  />
                 </Button> 
+                <ProfileAvatar />
             </div>
 
         </nav>

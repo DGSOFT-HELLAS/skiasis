@@ -1,5 +1,6 @@
+'use client'
 import React, { useEffect, useState } from 'react'
-import './style.css'
+import styles from './styles.module.css'
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -16,11 +17,16 @@ import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { Skeleton } from "@/components/ui/skeleton"
 
+
+
+
+
 export function SkeletonDemo() {
   return (
     <div className="avatar_wrapper">
       <Skeleton className="avatar " />
       <div className="flex flex-column">
+        <Skeleton className="avatar_skeleton_text_top" />
         <Skeleton className="avatar_skeleton_text_top" />
         <Skeleton className="avatar_skeleton_text_bottom" />
       </div>
@@ -47,32 +53,33 @@ const ProfileAvatar = () => {
  
   return (
     <>
-      {initials ? (
+      {/* {initials ? ( */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-              <div className='avatar_wrapper'>
-                <Button className='avatar'>
+              <div className={styles.avatarWrapper}>
+                <Button className={styles.avatar}>
                   {initials}
                 </Button>
-                <div className="avatar_details">
-                  <div>
-                    <p className='text-sm font-medium leading-none'>{user?.name} </p>
-                    <p className='text-xs leading-none text-muted-foreground'>{user?.role}</p>
+                <div >
+                  <div className={styles.avatarTop}>
+                    <p >{user?.name} </p>
+                    <FaAngleDown className='text-muted-foreground ml-2' />
                   </div>
-                  <FaAngleDown className='text-muted-foreground ml-2' />
+                  <p className={styles.avatarRole}>{user?.role}</p>
+                 
                 </div>
               </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="mt-2 w-56" align="end" forceMount>
-            <DropdownMenuLabel className="font-normal">
+            {/* <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium leading-none">{session?.name}</p>
                 <p className="text-xs leading-none text-muted-foreground">
                   {session?.email}
                 </p>
               </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            </DropdownMenuLabel> */}
+            {/* <DropdownMenuSeparator /> */}
             <DropdownMenuItem>
               <DropdownMenuItem 
               onClick={
@@ -87,9 +94,9 @@ const ProfileAvatar = () => {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-       ) : (
+       {/* ) : (
         <SkeletonDemo />
-      )} 
+      )}  */}
     </>
 
 

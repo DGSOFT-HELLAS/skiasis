@@ -17,28 +17,21 @@ export default function DateTimePicker({
     label,
     date,
     name,
-    handleEvent
+    handleEvent,
+    calendarError,
 }) {
    
     const [state, setState] = useState({
-        date: date.split('T')[0],
-        time: date.split('T')[1],
-        hour: date.split('T')[1].split(':')[0],
-        minutes: date.split('T')[1].split(':')[1]
+        date: date.split(' ')[0],
+        time: date.split(' ')[1],
+        hour: date.split(' ')[1].split(':')[0],
+        minutes: date.split(' ')[1].split(':')[1]
     })
 
-    // const [timePicker, setTimePicker] = useState({
-    //     hour:  '00',
-    //     minutes: '00'
-    // })
-
-    // useEffect(() => {
-    //     console.log(timePicker)
-    // }, [timePicker])
-
-    // useEffect(() => {
-    //     handleEvent(name, `${state.date} ${state.time}`)
-    // }, [state])
+    useEffect(() => {
+        console.log(state.hour, state.minutes)
+        handleEvent(name, `${state.date} ${state.hour}:${state.minutes}`)
+    }, [state.date, state.hour, state.minutes])
 
    
 
@@ -57,7 +50,7 @@ export default function DateTimePicker({
 
     return (
         <div className="w-full pb-2 ">
-            <Label htmlFor="message">{label}</Label>
+            <Label className={calendarError && `${styles.labelError}` } htmlFor="message">{label}</Label>
             <div className={styles.container}>
                 <Popover>
                     <PopoverTrigger asChild>
@@ -73,7 +66,7 @@ export default function DateTimePicker({
                             mode="single"
                             locale={el}
                             onSelect={handleSelectDate}
-                            selected={state.date}
+                            selected={new Date(state.date)}
                         />
                     </PopoverContent>
                 </Popover>
@@ -111,7 +104,7 @@ export default function DateTimePicker({
                     </PopoverContent>
                 </Popover>
             </div>
-
+            {calendarError ? <span className={styles.error}>{calendarError}</span> : null}
         </div>
     )
 }

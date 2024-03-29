@@ -1,0 +1,41 @@
+.avatarWrapper {
+	display: flex;
+    align-items: center;
+    /* background-color: var(--accent); */
+    border-radius: 6px;
+    min-width: 140px;
+    padding: 5px;
+    height: 40px;
+    cursor: pointer;
+}
+
+.avatar {
+	width: 36px;
+	height: 36px;
+	border-radius: 4px;
+	margin-right: 10px;
+	cursor: pointer;
+	position: relative;
+	color: white;
+    border-radius: 4px;
+    background-color: var(--secondary);
+}
+
+.avatarTop {
+    display: flex;
+    align-items: center;
+}
+.avatarTop svg {
+    font-size: 14px;
+    color: var(--primary);
+}
+.avatarTop p {
+    font-size: 15px;
+}
+
+.avatarRole {
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin-top: -4px;
+    color: var(--muted-foreground);
+}
