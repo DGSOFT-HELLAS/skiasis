@@ -17,7 +17,7 @@ import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { Skeleton } from "@/components/ui/skeleton"
 
-
+import {Power} from 'lucide-react'
 
 
 
@@ -70,17 +70,7 @@ const ProfileAvatar = () => {
                 </div>
               </div>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="mt-2 w-56" align="end" forceMount>
-            {/* <DropdownMenuLabel className="font-normal">
-              <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">{session?.name}</p>
-                <p className="text-xs leading-none text-muted-foreground">
-                  {session?.email}
-                </p>
-              </div>
-            </DropdownMenuLabel> */}
-            {/* <DropdownMenuSeparator /> */}
-            <DropdownMenuItem>
+          <DropdownMenuContent className=" w-30" align="start" forceMount>
               <DropdownMenuItem 
               onClick={
                 () => {
@@ -89,9 +79,9 @@ const ProfileAvatar = () => {
                 });
               }
               }>
+                <Power size={16} className="mr-2" />
                 Logout
               </DropdownMenuItem>
-            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
        {/* ) : (

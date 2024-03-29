@@ -31,8 +31,8 @@ export default function RFullCalendar({ }) {
 	const [state, setState] = useState({
 		loading: false,
 		addEvent: false,
-		start: '20240101',
-		end: '20241230',
+		start: '',
+		end: '',
 		event: {
 			start: '',
 			end: '',
@@ -48,6 +48,8 @@ export default function RFullCalendar({ }) {
 	//FETCH DATA FROM THE SERVER:
 	const handleFetch = async () => {
 		setState(prev => ({ ...prev, loading: true }))
+		console.log('FETCHING DATA')
+		console.log(state.start, state.end)
 		const { data } = await axios.post('/api/calendarEvents', {
 			start: state.start,
 			end: state.end
@@ -59,7 +61,7 @@ export default function RFullCalendar({ }) {
 
 	useEffect(() => {
 		handleFetch()
-	}, [])
+	}, [state.start, state.end])
 
 
 	useEffect(() => {
@@ -148,7 +150,9 @@ export default function RFullCalendar({ }) {
 			calendarRef?.current?.getApi().updateSize();
 		}, 0);
 
-		// setState(prev => ({ ...prev, start: payload.startStr, end: payload.endStr, loading: true }))
+		console.log('payload')
+		console.log(payload.startStr, payload.endStr)
+		setState(prev => ({ ...prev, start: payload.startStr, end: payload.endStr, loading: true }))
 	}
 	return (
 		<div>
@@ -161,13 +165,12 @@ export default function RFullCalendar({ }) {
 				) : null}
 				<FullCalendar
 					plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin,]}
-					selectMirror={true}
+					// selectMirror={true}
 					headerToolbar={{
 						left: 'prev,next today',
 						center: 'title',
 						right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
 					}}
-					isLoading={true}
 					events={events}
 					initialView='dayGridMonth'
 					editable={false}
