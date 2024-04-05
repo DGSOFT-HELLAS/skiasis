@@ -16,7 +16,7 @@ export default function Login() {
         <div className="auth_container">
             <div className="auth_form_container">
                 <div className="register_text">
-                    <h1>Login to your account</h1>
+                    <h1>ΣΥΝΔΕΣΗ</h1>
                     <p>Enter your credentials below to login</p>
                 </div>
                 <LoginForm />

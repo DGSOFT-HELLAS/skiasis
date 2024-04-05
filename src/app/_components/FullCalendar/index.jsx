@@ -48,26 +48,25 @@ export default function RFullCalendar({ }) {
 	//FETCH DATA FROM THE SERVER:
 	const handleFetch = async () => {
 		setState(prev => ({ ...prev, loading: true }))
-		console.log('FETCHING DATA')
-		console.log(state.start, state.end)
+		
 		const { data } = await axios.post('/api/calendarEvents', {
 			start: state.start,
 			end: state.end
 		})
+		console.log('data')
+		console.log(data)
 		setEvents(data.events)
 		setState(prev => ({ ...prev, loading: false }))
 
 	}
 
 	useEffect(() => {
+		console.log('STATE START END')
 		handleFetch()
 	}, [state.start, state.end])
 
 
-	useEffect(() => {
-		console.log('STATE EVENT')
-		console.log(state.event)
-	}, [state.event])
+	
 
 
 	//Handle to close the Edit form popup
@@ -78,8 +77,6 @@ export default function RFullCalendar({ }) {
 	const handleEdit = (info) => {
 		let start = format(new Date(info.event.startStr), 'yyyy-MM-dd HH:mm')
 		let end = format(new Date(info.event.endStr), 'yyyy-MM-dd HH:mm')
-		const startDate = new Date(start);
-		console.log(startDate)
 
 		setState(prev => ({
 			...prev,
@@ -146,13 +143,12 @@ export default function RFullCalendar({ }) {
 
 
 	async function handleMonthChange(payload) {
-		setTimeout(() => {
-			calendarRef?.current?.getApi().updateSize();
-		}, 0);
+		// setTimeout(() => {
+		// 	calendarRef?.current?.getApi().updateSize();
+		// }, 0);
 
-		console.log('payload')
-		console.log(payload.startStr, payload.endStr)
-		setState(prev => ({ ...prev, start: payload.startStr, end: payload.endStr, loading: true }))
+		if(payload.view.type !== 'dayGridMonth') return;
+		setState(prev => ({ ...prev, start: payload.startStr, end: payload.endStr}))
 	}
 	return (
 		<div>
