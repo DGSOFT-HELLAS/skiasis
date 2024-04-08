@@ -11,14 +11,16 @@ import {
 import { Calendar } from "@/components/ui/calendar"
 import { el } from 'date-fns/locale';
 import { format } from "date-fns";
-
+import { isBefore } from 'date-fns';
 
 export default function DateTimePicker({
     label,
     date,
     name,
+    endDate,
     handleEvent,
     calendarError,
+    setCalendarError
 }) {
    
     const [state, setState] = useState({
@@ -29,9 +31,14 @@ export default function DateTimePicker({
     })
 
     useEffect(() => {
-        console.log(state.hour, state.minutes)
+        let date = `${state.date} ${state.hour}:${state.minutes}`
+        if(isBefore(endDate, date)) {
+            setCalendarError && setCalendarError('Η ημερομηνία λήξης δεν μπορεί να είναι πριν την ημερομηνία έναρξης')
+        } else {
+            setCalendarError && setCalendarError(null)
+        }
         handleEvent(name, `${state.date} ${state.hour}:${state.minutes}`)
-    }, [state.date, state.hour, state.minutes])
+    }, [state.date, state.hour, state.minutes, ])
 
    
 

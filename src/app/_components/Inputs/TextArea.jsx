@@ -1,8 +1,6 @@
 "use client"
-import { useForm } from "react-hook-form"
 import {
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -10,8 +8,6 @@ import {
 } from "@/components/ui/form"
 
 import { Textarea as Input } from "@/components/ui/textarea"
-
-
 
 export function TextArea({
     control,
@@ -29,7 +25,7 @@ export function TextArea({
                     <FormLabel>{label}</FormLabel>
                     <FormControl>
                         <Input
-                        rows={4}
+                        // rows={4}
                         resize={'vertical'}
                         disabled={disabled}
                         className="disabled:opacity-60" 

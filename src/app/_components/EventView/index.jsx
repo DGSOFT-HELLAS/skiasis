@@ -1,8 +1,6 @@
 
 'use client'
-import styles from './styles.module.css'
 import { Button } from "@/components/ui/button"
-import { isBefore } from 'date-fns'
 import {
     Dialog,
     DialogClose,
@@ -19,7 +17,7 @@ import { z } from "zod"
 import { TextArea } from '../Inputs/TextArea';
 import { Pencil, X, Save, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import DateTimePicker from '../DateTimePicker';
+import { useRouter } from 'next/navigation'
 import { DialogDescription } from '@radix-ui/react-dialog'
 import Status from '../Status'
 
@@ -39,11 +37,8 @@ export default function ViewEvent({
     open,
     setOpen,
     event,
-    handleEvent,
-    startDate,
-    endDate,
 }) {
-
+    const router = useRouter();
     const [state, setState] = useState({
         edit: false,
         disabled: true
@@ -53,12 +48,8 @@ export default function ViewEvent({
         defaultValues: {
             title: event.title,
             description: event.description,
-
         },
     })
-    const [calendarError, setCalendarError] = useState(null)
-
-
 
 
     useEffect(() => {
@@ -69,31 +60,9 @@ export default function ViewEvent({
             description: event.description,
             client: event.extendedProps.trdr
         })
-
     }, [event])
 
-    const handleShowEditForm = () => {
-        setState(prev => ({
-            ...prev,
-            edit: !prev.edit,
-            disabled: !prev.disabled
-        }))
-    }
-    const onSubmit = (data) => {
-        if (isBefore(endDate, startDate)) {
-            setCalendarError('Η ημερομηνία λήξης δεν μπορεί να είναι πριν την ημερομηνία έναρξης')
-        } else {
-            setCalendarError(null)
-        }
 
-        //SEND THE FINAL REQUEST TO UPDATE SOFTONE:
-        console.log({
-            ...data,
-            start: startDate,
-            end: endDate
-
-        })
-    }
 
 
     return (
@@ -101,17 +70,15 @@ export default function ViewEvent({
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle>
-                        {/* {event.start.split(' ')[0]} */}
-                        <Status status={event.extendedProps.status} />
+                        <Status status={event?.extendedProps.status} />
                     </DialogTitle>
                     <DialogDescription className='text-xs'>
-                     {event.start.split(' ')[0]}    { event.start.split(' ')[1]} - {event.end.split(' ')[1]}
+                        {event.start.split(' ')[0]}    {event.start.split(' ')[1]} - {event.end.split(' ')[1]}
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
-                  
-                    <TextInput
+                    <form className="w-full space-y-4">
+                        <TextInput
                             control={form.control}
                             label={'Πελάτης'}
                             name="client"
@@ -123,31 +90,12 @@ export default function ViewEvent({
                             name="title"
                             disabled={state.disabled}
                         />
-                       
                         <TextArea
                             control={form.control}
                             label={'Περιγραφή'}
                             name="description"
                             disabled={state.disabled}
                         />
-                        {state.edit ? (
-                            <>
-                                <DateTimePicker
-                                    label="Hμερ/'Ώρα Έναρξης"
-                                    name="start"
-                                    date={startDate}
-                                    handleEvent={handleEvent}
-                                    calendarError={calendarError}
-                                />
-                                <DateTimePicker
-                                    label="Hμερ/'Ώρα Λήξης"
-                                    name="end"
-                                    date={endDate}
-                                    handleEvent={handleEvent}
-                                />
-
-                            </>
-                        ) : null}
                         <DialogFooter className="sm:justify-start">
                             <DialogClose asChild>
                                 <Button variant="outline"  >
@@ -155,26 +103,20 @@ export default function ViewEvent({
                                 </Button >
                             </DialogClose>
                             <Button
-                                onClick={handleShowEditForm}
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    router.push(`/dashboard/edit-event/${event.extendedProps.id}`)
+                                }}
                                 variant="outline"   >
                                 <Pencil className="h-4 w-4" />
                             </Button>
-
-                            {!state.edit ? (
-                                <Button type="submit">
-                                    <Plus className="h-4 w-4 mr-2" />
-                                    Νέα Προσφορά
-                                </Button>
-                            ) : (
-                                <Button type="submit">
-                                    <Save className="h-4 w-4 mr-2" />
-                                    Aποθήκευση
-                                </Button>
-                            )}
+                            <Button type="submit">
+                                <Plus className="h-4 w-4 mr-2" />
+                                Νέα Προσφορά
+                            </Button>
                         </DialogFooter>
                     </form>
                 </Form>
-
             </DialogContent>
         </Dialog>
     )

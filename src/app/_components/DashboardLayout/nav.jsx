@@ -20,7 +20,13 @@ import Image from "next/image"
     return (
         <nav className="nav_container">
             <div className="nav_logo">
-                <Image src="/newlogo.png" alt="logo" fill sizes={'130px 60px'}/>
+                <Image 
+                    src="/newlogo.png" 
+                    alt="logo" 
+                    fill 
+                    sizes={'130px 60px'}
+                    priority
+                />
             </div>
             <div className="nav_buttons">
               

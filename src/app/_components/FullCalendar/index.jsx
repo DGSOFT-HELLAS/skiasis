@@ -14,10 +14,13 @@ import interactionPlugin from "@fullcalendar/interaction"
 import AddEvent from './addEvent';
 import axios from 'axios'
 import { useSession } from "next-auth/react";
-import ViewEvent from '../ViewEvent';
+import ViewEvent from '../EventView';
 import { redirect } from 'next/navigation'
 import { format, isBefore } from 'date-fns';
 import Spinner from '../Spinner';
+
+
+
 export default function RFullCalendar({ }) {
 	const { data: session } = useSession({
 		required: true,
@@ -31,6 +34,7 @@ export default function RFullCalendar({ }) {
 	const [state, setState] = useState({
 		loading: false,
 		addEvent: false,
+		editEvent: false,
 		start: '',
 		end: '',
 		event: {
@@ -75,6 +79,7 @@ export default function RFullCalendar({ }) {
 	}
 	//PASS DATA TO THE EDIT FORM:
 	const handleEdit = (info) => {
+		console.log('handle edit')
 		let start = format(new Date(info.event.startStr), 'yyyy-MM-dd HH:mm')
 		let end = format(new Date(info.event.endStr), 'yyyy-MM-dd HH:mm')
 
@@ -112,7 +117,9 @@ export default function RFullCalendar({ }) {
 		}
 
 		setState(prev => ({
-			...prev, addEvent: true,
+			...prev, 
+			addEvent: true,
+			editEvent: false,
 			event: {
 				start: start,
 				end: end
@@ -123,29 +130,13 @@ export default function RFullCalendar({ }) {
 
 
 
-	//ALTER THE STATE OF THE EVENT THAT WE ADDED:
-	const handleEvent = (name, value, extendedProps) => {
-
-		if (extendedProps) {
-			setState(prev => ({ ...prev, event: { ...prev.event, extendedProps: { ...prev.event.extendedProps, [name]: value } } }))
-			return;
-		}
-		setState(prev => ({ ...prev, event: { ...prev.event, [name]: value } }))
-
-	}
-	//FINAL SUBMIT OF THE EVENT:
-	const handleAddSubmit = async () => {
-		//add event to softone
-		// console.log('event')
-		// console.log(state.event)
-	}
-
+	
 
 
 	async function handleMonthChange(payload) {
-		// setTimeout(() => {
-		// 	calendarRef?.current?.getApi().updateSize();
-		// }, 0);
+		setTimeout(() => {
+			calendarRef?.current?.getApi().updateSize();
+		}, 0);
 
 		if(payload.view.type !== 'dayGridMonth') return;
 		setState(prev => ({ ...prev, start: payload.startStr, end: payload.endStr}))
@@ -161,7 +152,6 @@ export default function RFullCalendar({ }) {
 				) : null}
 				<FullCalendar
 					plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin,]}
-					// selectMirror={true}
 					headerToolbar={{
 						left: 'prev,next today',
 						center: 'title',
@@ -189,9 +179,8 @@ export default function RFullCalendar({ }) {
 					setOpen={handleCloseEditForm}
 					startDate={state.event.start}
 					endDate={state.event.end}
-					handleEvent={handleEvent}
 				/>
-				<AddEvent
+				{/* <AddEvent
 					open={state.addEvent}
 					setOpen={handleCloseAddEvent}
 					handleEvent={handleEvent}
@@ -199,7 +188,7 @@ export default function RFullCalendar({ }) {
 					handleSubmit={handleAddSubmit}
 					startDate={state.event.start}
 					endDate={state.event.end}
-				/>
+				/> */}
 			</div>
 		</div>
 

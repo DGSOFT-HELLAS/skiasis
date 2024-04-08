@@ -1,0 +1,12 @@
+.calendarDate {
+    display: inline-flex;
+    align-items: center;
+}
+.calendarDate span {
+    margin-top: 1px;
+}
+.calendarDate svg {
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+}
