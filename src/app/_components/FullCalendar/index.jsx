@@ -11,12 +11,11 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from "@fullcalendar/interaction"
 //CUSTOM EVENTS:
-import AddEvent from './addEvent';
 import axios from 'axios'
 import { useSession } from "next-auth/react";
 import ViewEvent from '../EventView';
 import { redirect } from 'next/navigation'
-import { format, isBefore } from 'date-fns';
+import { format } from 'date-fns';
 import Spinner from '../Spinner';
 
 
@@ -79,7 +78,6 @@ export default function RFullCalendar({ }) {
 	}
 	//PASS DATA TO THE EDIT FORM:
 	const handleEdit = (info) => {
-		console.log('handle edit')
 		let start = format(new Date(info.event.startStr), 'yyyy-MM-dd HH:mm')
 		let end = format(new Date(info.event.endStr), 'yyyy-MM-dd HH:mm')
 
@@ -96,11 +94,7 @@ export default function RFullCalendar({ }) {
 			}
 		}))
 	};
-	//CLOSE THE ADD EVENT:
-	const handleCloseAddEvent = () => {
-		setState(prev => ({ ...prev, addEvent: false }))
-	}
-
+	
 
 	//ADD A NEW EVENT AFTER CLEARING THE EVENT ON THE STATE:
 	const handleSelectAllow = (event) => {
@@ -134,9 +128,9 @@ export default function RFullCalendar({ }) {
 
 
 	async function handleMonthChange(payload) {
-		setTimeout(() => {
-			calendarRef?.current?.getApi().updateSize();
-		}, 0);
+		// setTimeout(() => {
+		// 	calendarRef?.current?.getApi().updateSize();
+		// }, 0);
 
 		if(payload.view.type !== 'dayGridMonth') return;
 		setState(prev => ({ ...prev, start: payload.startStr, end: payload.endStr}))
@@ -180,15 +174,7 @@ export default function RFullCalendar({ }) {
 					startDate={state.event.start}
 					endDate={state.event.end}
 				/>
-				{/* <AddEvent
-					open={state.addEvent}
-					setOpen={handleCloseAddEvent}
-					handleEvent={handleEvent}
-					event={state.event}
-					handleSubmit={handleAddSubmit}
-					startDate={state.event.start}
-					endDate={state.event.end}
-				/> */}
+				
 			</div>
 		</div>
 

@@ -36,8 +36,10 @@ export default async function Page({params}) {
     const data = await fetchData(SOACTION, authId);
 
     return (
-        <div>
+        <div className="editform_container" >
+            <div className="editform" >
             <EventEdit event={data[0]}/>
+            </div>
         </div>
     );
 }

@@ -10,3 +10,32 @@
     height: 16px;
     margin-right: 6px;
 }
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+.gridΤhree {
+    display: grid;
+    grid-template-columns: reapeat(3, 1fr);
+    gap: 1rem;
+}
+
+.details {
+    margin-bottom: 20px;
+}
+.title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    /* margin-bottom: 1rem; */
+}
+
+@media screen and (max-width: 1200px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+    .gridThree {
+        grid-template-columns: 1fr;
+    }
+}
