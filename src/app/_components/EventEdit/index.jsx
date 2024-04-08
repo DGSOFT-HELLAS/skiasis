@@ -17,6 +17,9 @@ const FormSchema = z.object({
     TNAME: z.string().min(2, {
         message: "Tουλάχιστον 2 χαρακτήρες.",
     }),
+    TPHONE01: z.string().min(2, {
+        message: 'Tουλάχιστον 2 χαρακτήρες.'
+    }),
 
 })
 
@@ -28,20 +31,22 @@ const FormSchema = z.object({
 export default function EventEdit({
     event,
 }) {
+    //STATE FOR THE DATE TIME COMPONENTS
     const [state, setState] = useState({
         start: event.FROMDATE,
         end: event.FINALDATE,
     })
     const form = useForm({
         resolver: zodResolver(FormSchema),
-        defaultValues: event,
+        // defaultValues: event,
     })
+
+    //CUSTOM ERROR FOR THE CALENDAR COMPONENT
     const [calendarError, setCalendarError] = useState(null)
 
 
 
     useEffect(() => {
-        console.log(event)
         form.reset(event)
     }, [event])
 
