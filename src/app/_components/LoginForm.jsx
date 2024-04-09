@@ -53,32 +53,13 @@ export default function LoginForm() {
 
     async function onSubmit(data) {
         setState(prev => ({ ...prev, loading: true, disabled: true }))
-       
-        // try {
-        //    const res = await axios.post('/api/auth/login', {
-        //     username: data.username,
-        //     password: data.password
-        //    })
-        //    //ALERT THAT USER IS NOT FOUND
-        //    if(!res.data.success) {
-        //     alert('Invalid credentials')
-        //    }
-
-
-
-        // } catch (e) {
-        //     throw new Error(e)
-        // }
-        // setState(prev => ({ ...prev, loading: false, disabled: false }))
-        // router.push('/dashboard/calendar')
         try {
             const resp = await signIn('credentials', {
                 username: data.username,
                 password: data.password,
                 redirect: false,
             })
-            console.log('resp')
-            console.log(resp)
+          
             if (resp.status !== 200) {
                 toast.error("Error Notification !");
                 setState(prev => ({ ...prev, loading: false, disabled: false }))

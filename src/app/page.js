@@ -7,6 +7,6 @@ export default async function Home() {
     if(!clientID ) {
         redirect('/login')
     }
-    redirect('/dashboard/tickets')
+   
  
   }

@@ -26,6 +26,7 @@ const fetchData = async (SOACTION, authId) => {
 }
 
 
+
 export default async function Page({params}) {
     const SOACTION = params.id;
     const {user} = await getServerSession(authOptions);
@@ -38,7 +39,7 @@ export default async function Page({params}) {
     return (
         <div className="editform_container" >
             <div className="editform" >
-            <EventEdit event={data[0]}/>
+            <EventEdit event={data[0]} soaction={SOACTION}/>
             </div>
         </div>
     );

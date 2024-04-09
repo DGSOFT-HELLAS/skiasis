@@ -34,8 +34,8 @@ export default function RFullCalendar({ }) {
 		loading: false,
 		addEvent: false,
 		editEvent: false,
-		start: '',
-		end: '',
+		start: '2024-01-01 00:00',
+		end: '2024-12-31 23:59',
 		event: {
 			start: '',
 			end: '',
@@ -51,13 +51,13 @@ export default function RFullCalendar({ }) {
 	//FETCH DATA FROM THE SERVER:
 	const handleFetch = async () => {
 		setState(prev => ({ ...prev, loading: true }))
+		console.log(state.start, state.end)
 		try {
 			const { data } = await axios.get(`/api/calendarEvents?start=${state.start}&end=${state.end}`)
-			console.log('data')
-			console.log(data)
+			console.log(data.events)
 			setEvents(data.events)
 			setState(prev => ({ ...prev, loading: false }))
-	
+		
 		} catch (e) {
 			console.log(e)
 			setState(prev => ({ ...prev, loading: false }))
@@ -66,11 +66,12 @@ export default function RFullCalendar({ }) {
 	}
 
 	useEffect(() => {
-		console.log('STATE START END')
+
 		handleFetch()
-	}, [state.start, state.end])
+	}, [])
 
 
+	
 	
 
 
@@ -100,6 +101,7 @@ export default function RFullCalendar({ }) {
 
 	//ADD A NEW EVENT AFTER CLEARING THE EVENT ON THE STATE:
 	const handleSelectAllow = (event) => {
+		console.log('handle select allow')
 		let start;
 		let end;
 		if (event.allDay) {
@@ -130,11 +132,9 @@ export default function RFullCalendar({ }) {
 
 
 	async function handleMonthChange(payload) {
-		// setTimeout(() => {
-		// 	calendarRef?.current?.getApi().updateSize();
-		// }, 0);
-
-		if(payload.view.type !== 'dayGridMonth') return;
+		setTimeout(() => {
+			calendarRef?.current?.getApi().updateSize();
+		}, 0);
 		setState(prev => ({ ...prev, start: payload.startStr, end: payload.endStr}))
 	}
 	return (
@@ -163,11 +163,11 @@ export default function RFullCalendar({ }) {
 					selectAllow={(e) => handleSelectAllow(e)}
 					locale={elLocale}
 					dayMaxEventRows={3}
-					datesSet={handleMonthChange}
+					// datesSet={handleMonthChange}
 					ref={calendarRef}
-					contentHeight={90}
+					contentHeight={100}
 					height={'100vh'}
-					lazyFetching={true}
+					
 				/>
 				<ViewEvent
 					event={state.event}

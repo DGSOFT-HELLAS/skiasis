@@ -11,7 +11,8 @@ import { z } from "zod"
 import { Pencil, X, Save, Plus, MoveLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Status from '../Status'
-
+import axios from 'axios'
+import { useRouter } from 'next/navigation';
 
 const FormSchema = z.object({
     TNAME: z.string().min(2, {
@@ -24,10 +25,7 @@ const FormSchema = z.object({
     COMMENTS: z.string().optional(),
     TADDRESS: z.string().optional(),
     TDISTRICT: z.string().optional(),
-    TZIP: z.number().optional().refine(value => value === undefined || !isNaN(value), {
-            message: 'Πρέπει να είναι αριθμός ή κενό.'
-        }),
-
+    TZIP: z.string().optional()
 })
 
 
@@ -37,7 +35,9 @@ const FormSchema = z.object({
 
 export default function EventEdit({
     event,
-}) {
+    soaction
+}) {    
+    const router = useRouter();
     //STATE FOR THE DATE TIME COMPONENTS
     const [state, setState] = useState({
         start: event.FROMDATE,
@@ -64,20 +64,39 @@ export default function EventEdit({
     }
 
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         // SEND THE FINAL REQUEST TO UPDATE SOFTONE:
         console.log({
             ...data,
             start: state.start,
             end: state.end
         })
+        try {
+            const response = await axios.post('/api/calendarEvents',  {
+                event: {
+                    ...data,
+                    start: state.start,
+                    end: state.end,
+                    key: soaction
+                }
+            
+            })
+            console.log(response.data)
+
+        } catch (e) {
+            console.log(e)
+        }
+
 
     }
 
 
     return (
         <Form {...form} >
-            <Button className="bg-muted-foreground mb-4">
+            <Button
+                onClick={() => router.back() } 
+                className="bg-muted-foreground mb-4"
+                >
                 <MoveLeft className='h-4 w-4 mr-2' />
                 Πίσω
             </Button>
