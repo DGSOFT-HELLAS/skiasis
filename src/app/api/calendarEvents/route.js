@@ -1,10 +1,11 @@
 
 import translateData from '@/utils/translateData';
 
-export async function POST(request) {
-    const {start, end} = await request.json()
-    console.log('start end')
-   
+export async function GET(request) {
+    // const {start, end} = await request.json()
+    const { searchParams } = new URL(request.url)
+    const start = searchParams.get('start');
+    const end  = searchParams.get('end');
     let _start = start.split('T')[0].split('-').join('')
     let _end = end.split('T')[0].split('-').join('')
   
@@ -40,18 +41,7 @@ export async function POST(request) {
     }
   
 }
-// export async function GET(request) {
-//     const { searchParams } = new URL(request.url)
-   
-//     const start = searchParams.get('start')
-//     const end = searchParams.get('end')
-//     console.log('start end')
-//     console.log(start, end)
-//     return Response.json({
-//         success: true,
-//         events: []
-    
-//     })
+
 
 //     // let _start = start.split('T')[0].split('-').join('')
 //     // let _end = end.split('T')[0].split('-').join('')

@@ -20,6 +20,13 @@ const FormSchema = z.object({
     TPHONE01: z.string().min(2, {
         message: 'Tουλάχιστον 2 χαρακτήρες.'
     }),
+    REMARKS: z.string().optional(),
+    COMMENTS: z.string().optional(),
+    TADDRESS: z.string().optional(),
+    TDISTRICT: z.string().optional(),
+    TZIP: z.number().optional().refine(value => value === undefined || !isNaN(value), {
+            message: 'Πρέπει να είναι αριθμός ή κενό.'
+        }),
 
 })
 
@@ -38,7 +45,7 @@ export default function EventEdit({
     })
     const form = useForm({
         resolver: zodResolver(FormSchema),
-        // defaultValues: event,
+        defaultValues: event,
     })
 
     //CUSTOM ERROR FOR THE CALENDAR COMPONENT

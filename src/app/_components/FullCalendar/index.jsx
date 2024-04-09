@@ -51,16 +51,18 @@ export default function RFullCalendar({ }) {
 	//FETCH DATA FROM THE SERVER:
 	const handleFetch = async () => {
 		setState(prev => ({ ...prev, loading: true }))
-		
-		const { data } = await axios.post('/api/calendarEvents', {
-			start: state.start,
-			end: state.end
-		})
-		console.log('data')
-		console.log(data)
-		setEvents(data.events)
-		setState(prev => ({ ...prev, loading: false }))
-
+		try {
+			const { data } = await axios.get(`/api/calendarEvents?start=${state.start}&end=${state.end}`)
+			console.log('data')
+			console.log(data)
+			setEvents(data.events)
+			setState(prev => ({ ...prev, loading: false }))
+	
+		} catch (e) {
+			console.log(e)
+			setState(prev => ({ ...prev, loading: false }))
+		}
+	
 	}
 
 	useEffect(() => {
