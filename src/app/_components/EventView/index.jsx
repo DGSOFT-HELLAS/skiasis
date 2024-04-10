@@ -53,12 +53,11 @@ export default function ViewEvent({
 
 
     useEffect(() => {
-        console.log('event')
-        console.log(event)
+       
         form.reset({
             title: event.title,
             description: event.description,
-            client: event.extendedProps.trdr
+            client: event.extendedProps?.trdr
         })
     }, [event])
 
@@ -70,7 +69,7 @@ export default function ViewEvent({
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle>
-                        <Status status={event?.extendedProps.status} />
+                        <Status status={event?.extendedProps?.status} />
                     </DialogTitle>
                     <DialogDescription className='text-xs'>
                         {event.start.split(' ')[0]}    {event.start.split(' ')[1]} - {event.end.split(' ')[1]}

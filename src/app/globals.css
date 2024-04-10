@@ -148,6 +148,13 @@ body {
     width: 450px;
 }
 
+.auth_image {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .auth_brand {
     background-color: var(--foreground);
     padding: 2rem;

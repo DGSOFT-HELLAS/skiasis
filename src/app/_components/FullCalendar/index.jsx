@@ -42,6 +42,9 @@ export default function RFullCalendar({ }) {
 			title: '',
 			description: '',
 			extendedProps: {
+				trdr: '',
+				status: ''
+				
 			}
 		}
 	})
@@ -66,7 +69,6 @@ export default function RFullCalendar({ }) {
 	}
 
 	useEffect(() => {
-
 		handleFetch()
 	}, [])
 

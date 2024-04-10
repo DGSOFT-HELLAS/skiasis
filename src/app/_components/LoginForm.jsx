@@ -14,17 +14,11 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Eye, EyeOff } from 'lucide-react';
-import Link from "next/link"
 import { useRouter } from "next/navigation";
 import { ReloadIcon } from "@radix-ui/react-icons"
-import axios from 'axios'
 import { signIn } from "next-auth/react";
 
-
 const FormSchema = z.object({
-    // email: z.string()
-    //     .min(1, { message: "This field has to be filled." })
-    //     .email("This is not a valid email."),
     username: z.string()
         .min(1, { message: "This field has to be filled." }),
     password: z.string()
@@ -76,6 +70,7 @@ export default function LoginForm() {
 
     return (
         <Form {...form} >
+
             <form onSubmit={form.handleSubmit(onSubmit)} className="w-full grid gap-4">
                 <FormField
                     control={form.control}
@@ -83,7 +78,7 @@ export default function LoginForm() {
                     render={({ field }) => (
                         <FormItem>
                             <FormControl>
-                                <Input placeholder="username" {...field} />
+                                <Input placeholder="Όνομα" {...field} />
                             </FormControl>
                             <FormMessage className="form_message" />
                         </FormItem>
@@ -96,7 +91,7 @@ export default function LoginForm() {
                     render={({ field }) => (
                         <FormItem className="password_input">
                             <FormControl>
-                                <Input type={inputType} placeholder="password" {...field} />
+                                <Input type={inputType} placeholder="Κωδικός" {...field} />
                             </FormControl>
                             <FormMessage className="form_message" />
                             {inputType === 'password' ? (
@@ -107,17 +102,12 @@ export default function LoginForm() {
                         </FormItem>
                     )}
                 />
-                {/* <div className="forgot_pass_container">
-                    <CheckboxWithText label="keep me signed in" />
-                    <span className=" text-sm">Forgot password?</span>
-                </div> */}
+               
                 <Button  disabled={state.disabled}>
-                    {state.loading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
+                    {state.loading ? <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> : <Lock className="mr-2 h-4 w-4" />}
                     Σύνδεση
                 </Button>
-                {/* <div className="go_back_link">
-                    <Link href="/register">New here? Register now!</Link>
-                </div> */}
+              
             </form>
         </Form>
 
