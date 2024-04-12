@@ -17,17 +17,21 @@ import ViewEvent from '../EventView';
 import { redirect } from 'next/navigation'
 import { format } from 'date-fns';
 import Spinner from '../Spinner';
-
+import { fetchMeetingInfo } from '@/actions/events';
+import { useRouter } from 'next/navigation';
 
 
 export default function RFullCalendar({ }) {
+	const router = useRouter()
 	const { data: session } = useSession({
 		required: true,
 		onUnauthenticated() {
 			redirect("/login");
 		},
 	});
-
+	let clientID = session?.user?.id;
+	console.log('client id')
+	console.log(clientID)
 	const calendarRef = useRef(null);
 	const [events, setEvents] = useState()
 	const [state, setState] = useState({
@@ -37,15 +41,11 @@ export default function RFullCalendar({ }) {
 		start: '2024-01-01 00:00',
 		end: '2024-12-31 23:59',
 		event: {
-			start: '',
-			end: '',
-			title: '',
-			description: '',
-			extendedProps: {
-				trdr: '',
-				status: ''
-				
-			}
+			FROMDATE: '',
+			FINALDATE: '',
+			TADDRESS: '',
+			TZIP: '',
+			
 		}
 	})
 
@@ -82,63 +82,68 @@ export default function RFullCalendar({ }) {
 		setState(prev => ({ ...prev, editEvent: false }))
 	}
 	//PASS DATA TO THE EDIT FORM:
-	const handleEdit = (info) => {
+	const handleEdit = async (info) => {
 		let start = format(new Date(info.event.startStr), 'yyyy-MM-dd HH:mm')
 		let end = format(new Date(info.event.endStr), 'yyyy-MM-dd HH:mm')
-
+		console.log('info')
+		console.log(info.event.extendedProps)
+		let meeting = await fetchMeetingInfo(info.event.extendedProps.id, clientID)
+		console.log(meeting[0])
+		
 		setState(prev => ({
 			...prev,
 			editEvent: true,
-			event: {
-				...prev.event,
-				start: start,
-				end: end,
-				title: info.event.title,
-				description: info.event.extendedProps.description,
-				extendedProps: info.event.extendedProps
-			}
+			event: meeting[0]
+			// event: {
+			// 	...prev.event,
+			// 	start: start,
+			// 	end: end,
+			// 	title: info.event.title,
+			// 	description: info.event.extendedProps.description,
+			// 	extendedProps: info.event.extendedProps
+			// }
 		}))
 	};
 	
 
 	//ADD A NEW EVENT AFTER CLEARING THE EVENT ON THE STATE:
-	const handleSelectAllow = (event) => {
-		console.log('handle select allow')
-		let start;
-		let end;
-		if (event.allDay) {
-			start = `${event.startStr} 08:00`
-			end = `${event.startStr} 10:00`
-		}
+	// const handleSelectAllow = (event) => {
+	// 	console.log('handle select allow')
+	// 	let start;
+	// 	let end;
+	// 	if (event.allDay) {
+	// 		start = `${event.startStr} 08:00`
+	// 		end = `${event.startStr} 10:00`
+	// 	}
 
-		if (!event.allDay) {
-			start = `${event.startStr}`
-			end = `${event.endStr}`
-		}
+	// 	if (!event.allDay) {
+	// 		start = `${event.startStr}`
+	// 		end = `${event.endStr}`
+	// 	}
 
-		setState(prev => ({
-			...prev, 
-			addEvent: true,
-			editEvent: false,
-			event: {
-				start: start,
-				end: end
-			}
-		}
-		))
-	};
+	// 	setState(prev => ({
+	// 		...prev, 
+	// 		addEvent: true,
+	// 		editEvent: false,
+	// 		event: {
+	// 			start: start,
+	// 			end: end
+	// 		}
+	// 	}
+	// 	))
+	// };
 
 
 
 	
 
 
-	async function handleMonthChange(payload) {
-		setTimeout(() => {
-			calendarRef?.current?.getApi().updateSize();
-		}, 0);
-		setState(prev => ({ ...prev, start: payload.startStr, end: payload.endStr}))
-	}
+	// async function handleMonthChange(payload) {
+	// 	setTimeout(() => {
+	// 		calendarRef?.current?.getApi().updateSize();
+	// 	}, 0);
+	// 	setState(prev => ({ ...prev, start: payload.startStr, end: payload.endStr}))
+	// }
 	return (
 		<div>
 
@@ -162,7 +167,7 @@ export default function RFullCalendar({ }) {
 					eventClick={handleEdit}
 					selectable={true}
 					//ADD EVENT:
-					selectAllow={(e) => handleSelectAllow(e)}
+					// selectAllow={(e) => handleSelectAllow(e)}
 					locale={elLocale}
 					dayMaxEventRows={3}
 					// datesSet={handleMonthChange}

@@ -1,5 +1,6 @@
 
 'use client'
+import styles from './styles.module.css'
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -15,20 +16,22 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { TextArea } from '../Inputs/TextArea';
-import { Pencil, X, Save, Plus } from 'lucide-react';
+import { Pencil, X, Save, Plus, MapPin, Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation'
 import { DialogDescription } from '@radix-ui/react-dialog'
 import Status from '../Status'
+import Link from "next/link";
 
-const FormSchema = z.object({
-    title: z.string().min(2, {
-        message: "Tουλάχιστον 2 χαρακτήρες.",
-    }),
-    description: z.string().min(2, {
-        message: 'Tουλάχιστον 2 χαρακτήρες.'
-    })
-})
+
+// const FormSchema = z.object({
+//     title: z.string().min(2, {
+//         message: "Tουλάχιστον 2 χαρακτήρες.",
+//     }),
+//     description: z.string().min(2, {
+//         message: 'Tουλάχιστον 2 χαρακτήρες.'
+//     })
+// })
 
 
 
@@ -44,7 +47,7 @@ export default function ViewEvent({
         disabled: true
     })
     const form = useForm({
-        resolver: zodResolver(FormSchema),
+        // resolver: zodResolver(FormSchema),
         defaultValues: {
             title: event.title,
             description: event.description,
@@ -53,11 +56,10 @@ export default function ViewEvent({
 
 
     useEffect(() => {
-       
+        console.log('event')
+        console.log(event)
         form.reset({
-            title: event.title,
-            description: event.description,
-            client: event.extendedProps?.trdr
+            ...event
         })
     }, [event])
 
@@ -69,10 +71,21 @@ export default function ViewEvent({
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle>
-                        <Status status={event?.extendedProps?.status} />
+                        <Status status={event?.ACTSTATUS} />
                     </DialogTitle>
                     <DialogDescription className='text-xs'>
-                        {event.start.split(' ')[0]}    {event.start.split(' ')[1]} - {event.end.split(' ')[1]}
+                        <div className={styles.icon}>
+                            <Clock  />
+                            <span>
+                            {event.FROMDATE.split(' ')[0]}  {event.FROMDATE.split(' ')[1]} - {event.FINALDATE.split(' ')[1]}
+                            </span>
+                        </div>
+                        <Link
+                            className={`${styles.icon} ${styles.link}`}  
+                            target="_blank"
+                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.TADDRESS)},${encodeURIComponent(event.TZIP)}`} >
+                            <MapPin /> {event.TADDRESS}
+                        </Link>
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
@@ -80,13 +93,19 @@ export default function ViewEvent({
                         <TextInput
                             control={form.control}
                             label={'Πελάτης'}
-                            name="client"
+                            name="TNAME"
                             disabled={state.disabled}
                         />
                         <TextInput
                             control={form.control}
-                            label={'Τιτλος'}
-                            name="title"
+                            label={'Περιγραφή'}
+                            name="REMARKS"
+                            disabled={state.disabled}
+                        />
+                        <TextInput
+                            control={form.control}
+                            label={'Σχόλιο'}
+                            name=""
                             disabled={state.disabled}
                         />
                         <TextArea
