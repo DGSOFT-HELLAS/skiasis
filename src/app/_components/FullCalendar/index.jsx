@@ -22,7 +22,6 @@ import { useRouter } from 'next/navigation';
 
 
 export default function RFullCalendar({ }) {
-	const router = useRouter()
 	const { data: session } = useSession({
 		required: true,
 		onUnauthenticated() {
@@ -30,8 +29,7 @@ export default function RFullCalendar({ }) {
 		},
 	});
 	let clientID = session?.user?.id;
-	console.log('client id')
-	console.log(clientID)
+	
 	const calendarRef = useRef(null);
 	const [events, setEvents] = useState()
 	const [state, setState] = useState({
@@ -83,8 +81,7 @@ export default function RFullCalendar({ }) {
 	}
 	//PASS DATA TO THE EDIT FORM:
 	const handleEdit = async (info) => {
-		let start = format(new Date(info.event.startStr), 'yyyy-MM-dd HH:mm')
-		let end = format(new Date(info.event.endStr), 'yyyy-MM-dd HH:mm')
+	
 		console.log('info')
 		console.log(info.event.extendedProps)
 		let meeting = await fetchMeetingInfo(info.event.extendedProps.id, clientID)
@@ -176,13 +173,15 @@ export default function RFullCalendar({ }) {
 					height={'100vh'}
 					
 				/>
-				<ViewEvent
+				{state.editEvent ? (
+					<ViewEvent
 					event={state.event}
 					open={state.editEvent}
 					setOpen={handleCloseEditForm}
 					startDate={state.event.start}
 					endDate={state.event.end}
 				/>
+				) : null}
 				
 			</div>
 		</div>

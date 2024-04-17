@@ -40,8 +40,8 @@ export default function EventEdit({
     const router = useRouter();
     //STATE FOR THE DATE TIME COMPONENTS
     const [state, setState] = useState({
-        start: event.FROMDATE,
-        end: event.FINALDATE,
+        start: event?.FROMDATE,
+        end: event?.FINALDATE,
     })
     const form = useForm({
         resolver: zodResolver(FormSchema),
@@ -54,6 +54,7 @@ export default function EventEdit({
 
 
     useEffect(() => {
+        console.log(event)
         form.reset(event)
     }, [event])
 

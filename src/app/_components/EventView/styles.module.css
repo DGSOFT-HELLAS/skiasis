@@ -12,6 +12,22 @@
 }
 
 
+.titleDivider {
+    font-size: 17px;
+    margin-bottom: 5px;
+    margin-top: 15px;
+}
+
+
+.titleDivider::after {
+    content: "";
+    display: block;
+    height: 2px;
+    width: 15px;
+    background-color: var(--secondary);
+
+}
+
 .icon {
     display: flex;
     align-items: center;
@@ -29,4 +45,24 @@
     height: 14px;
     margin-right: 6px;
     color: #007bff;
+}
+
+.form {
+    width: 100%;
+    padding-right: 10px;
+    height: 400px;
+    overflow-Y: scroll;
+    display: flex;
+    row-gap: 14px;
+    flex-direction: column;
+    padding-bottom: 10px;
+}
+
+.form::-webkit-scrollbar {
+    width: 5px;
+    background-color: rgb(238, 238, 238);
+}
+
+.form::-webkit-scrollbar-thumb {
+    background-color: var(--secondary);
 }

@@ -12,26 +12,15 @@ import {
 } from "@/components/ui/dialog"
 import { TextInput } from '../Inputs/TextInput';
 import { Form, } from "@/components/ui/form"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { TextArea } from '../Inputs/TextArea';
 import { Pencil, X, Save, Plus, MapPin, Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation'
 import { DialogDescription } from '@radix-ui/react-dialog'
 import Status from '../Status'
 import Link from "next/link";
-
-
-// const FormSchema = z.object({
-//     title: z.string().min(2, {
-//         message: "Tουλάχιστον 2 χαρακτήρες.",
-//     }),
-//     description: z.string().min(2, {
-//         message: 'Tουλάχιστον 2 χαρακτήρες.'
-//     })
-// })
+import { Checkbox } from "@/components/ui/checkbox"
+import { CheckboxSingle } from '../Inputs/Checkbox';
 
 
 
@@ -42,78 +31,127 @@ export default function ViewEvent({
     event,
 }) {
     const router = useRouter();
-    const [state, setState] = useState({
-        edit: false,
-        disabled: true
-    })
     const form = useForm({
-        // resolver: zodResolver(FormSchema),
         defaultValues: {
-            title: event.title,
-            description: event.description,
-        },
+            ...event,
+        }
     })
 
 
     useEffect(() => {
-        console.log('event')
-        console.log(event)
         form.reset({
-            ...event
+            ...event,
+            PLACEREDINESS: event.PLACEREDINESS === '1' ? true : false,
+            REMOVENOTE: event?.REMOVENOTE?.split('|')[1] || 'Δεν υπάρχει σχόλιο',
+            TELESCOPIC: event?.TELESCOPIC?.split('|')[1] || 'Δεν υπάρχει σχόλιο',
         })
     }, [event])
 
 
-
-
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="sm:max-w-md">
+            {/* <DialogContent className="sm:max-w-md"> */}
+            <DialogContent className="w-full">
                 <DialogHeader>
                     <DialogTitle>
                         <Status status={event?.ACTSTATUS} />
                     </DialogTitle>
                     <DialogDescription className='text-xs'>
                         <div className={styles.icon}>
-                            <Clock  />
+                            <Clock />
                             <span>
-                            {event.FROMDATE.split(' ')[0]}  {event.FROMDATE.split(' ')[1]} - {event.FINALDATE.split(' ')[1]}
+                                {event.FROMDATE.split(' ')[0]}  {event.FROMDATE.split(' ')[1]} - {event.FINALDATE.split(' ')[1]}
                             </span>
                         </div>
                         <Link
-                            className={`${styles.icon} ${styles.link}`}  
+                            className={`${styles.icon} ${styles.link}`}
                             target="_blank"
                             href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.TADDRESS)},${encodeURIComponent(event.TZIP)}`} >
                             <MapPin /> {event.TADDRESS}
                         </Link>
                     </DialogDescription>
                 </DialogHeader>
-                <Form {...form}>
+
+                <Form
+
+                    {...form}
+                >
                     <form className="w-full space-y-4">
-                        <TextInput
-                            control={form.control}
-                            label={'Πελάτης'}
-                            name="TNAME"
-                            disabled={state.disabled}
-                        />
-                        <TextInput
-                            control={form.control}
-                            label={'Περιγραφή'}
-                            name="REMARKS"
-                            disabled={state.disabled}
-                        />
-                        <TextInput
-                            control={form.control}
-                            label={'Σχόλιο'}
-                            name=""
-                            disabled={state.disabled}
-                        />
-                        <TextArea
-                            control={form.control}
-                            label={'Περιγραφή'}
-                            name="description"
-                            disabled={state.disabled}
-                        />
+                        <div className={styles.form}>
+                        <CheckboxSingle
+                                control={form.control}
+                                label={'Ετοιμότητα Χώρου'}
+                                name="PLACEREDINESS"
+                            />
+                          
+                            <TextInput
+                                control={form.control}
+                                label={'Περιγραφή'}
+                                name="REMARKS"
+                                disabled={true}
+                            />
+                            <TextInput
+                                control={form.control}
+                                label={'Σχόλιο'}
+                                name="COMMENTS"
+                                disabled={true}
+
+                            />
+                            <TextInput
+                                control={form.control}
+                                label={'Αφαίρεση Υφ. συστημάτων'}
+                                name="REMOVENOTE"
+                                disabled={true}
+
+                            />
+                            <TextInput
+                                control={form.control}
+                                label={'Ενημ. Τηλεσκοπικού'}
+                                name="TELESCOPIC"
+                                disabled={true}
+
+                            />
+                            <p className={styles.titleDivider}>
+                                Στοιχεία Πελάτη
+                            </p>
+                            <TextInput
+                                control={form.control}
+                                label={'Πελάτης'}
+                                name="TNAME"
+                                disabled={true}
+                            />
+                            <TextInput
+                                control={form.control}
+                                label={'Τηλέφωνο'}
+                                name="TPHONE01"
+                                disabled={true}
+                            />
+                            <TextInput
+                                control={form.control}
+                                label={'Περιοχή'}
+                                name="TDISTRICT"
+                                disabled={true}
+                            />
+                            <TextInput
+                                control={form.control}
+                                label={'Τ.Κ.'}
+                                name="TZIP"
+                                disabled={true}
+
+                            />
+
+                            {/* <div className="flex items-center space-x-2">
+                                <Checkbox id="terms2" disabled  />
+                                <label
+                                    htmlFor="terms2"
+                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                >
+                                    Accept terms and conditions
+                                </label>
+                            </div> */}
+
+
+                        </div>
                         <DialogFooter className="sm:justify-start">
                             <DialogClose asChild>
                                 <Button variant="outline"  >
@@ -123,7 +161,7 @@ export default function ViewEvent({
                             <Button
                                 onClick={(e) => {
                                     e.preventDefault()
-                                    router.push(`/dashboard/edit-event/${event.extendedProps.id}`)
+                                    router.push(`/dashboard/edit-event/${event.SOACTION}`)
                                 }}
                                 variant="outline"   >
                                 <Pencil className="h-4 w-4" />
